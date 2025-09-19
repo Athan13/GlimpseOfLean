@@ -24,7 +24,7 @@ your proof is finished.
 -/
 
 example (a b : ℝ) : (a+b)^2 = a^2 + 2*a*b + b^2 := by
-  sorry
+  ring
 
 /- In the first example above, take a closer look at where Lean displays parentheses.
 The `ring` tactic certainly knows about associativity of multiplication, but sometimes
@@ -200,4 +200,3 @@ a Lean proof looks like and have learned about the following tactics:
 * `exact`
 * `calc`
 -/
-
