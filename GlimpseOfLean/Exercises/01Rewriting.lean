@@ -195,12 +195,9 @@ Aligning the equal signs and `:=` signs is not necessary but looks tidy.
 
 example (a b c d : ℝ) (h : c = d*a + b) (h' : b = a*d) : c = 2*a*d := by
   calc
-    c = d*a + b := by rw [h]
-    _ = a*d + b := by ring
-    _ = b + b   := by rw [h']
-    _ = 2*b     := by ring
-    _ = 2*(a*d) := by rw [h']
-    _ = 2*a*d   := by ring
+    c = d*a + b   := by rw [h]
+    _ = a*d + a*d := by rw [h']; ring
+    _ = 2*a*d     := by ring
 
 /-
 Congratulations, this is the end of your first exercise file! You've seen what typing
