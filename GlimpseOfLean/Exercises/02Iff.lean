@@ -38,7 +38,9 @@ prove one-by-one.
 -/
 
 example (a b : ℝ) (ha : 0 < a) (hb : 0 < b) : 0 < a^2 + b^2 := by
-  sorry
+  apply add_pos
+  apply sq_pos_of_pos; exact ha
+  apply sq_pos_of_pos; exact hb
 
 /-
 You can also give a proof with forward reasoning, using the `have` tactic.
@@ -62,7 +64,11 @@ example (a : ℝ) (ha : 0 < a) : 0 < (a^2)^2 := by
 /- Now prove the same lemma as before using forwards reasoning. -/
 
 example (a b : ℝ) (ha : 0 < a) (hb : 0 < b) : 0 < a^2 + b^2 := by
-  sorry
+  have ha' : 0 < a^2 := by
+    apply sq_pos_of_pos; exact ha
+  have hb' : 0 < b^2 := by
+    apply sq_pos_of_pos; exact hb
+  exact add_pos ha' hb'
 
 
 /- ## Proving implications
@@ -79,7 +85,8 @@ example (a b : ℝ) : a > 0 → b > 0 → a + b > 0 := by
 /- Now prove the following simple statement in propositional logic.
 Note that `p → q → r` means `p → (q → r)`. -/
 example (p q r : Prop) : (p → q) → (p → q → r) → p → r := by
-  sorry
+  intro ha hb p
+  exact hb p (ha p)
 
 /-
 Note that, when using `intro`, you need to give a name to the assumption.
@@ -115,7 +122,10 @@ Let's prove a variation
 -/
 
 example {a b : ℝ} (c : ℝ) : a + c ≤ b + c ↔ a ≤ b := by
-  sorry
+  rw [← sub_nonneg]
+  have h : b + c - (a + c) = b - a := by ring
+  rw [h]
+  rw [sub_nonneg]
 
 /-
 The above lemma is already in the mathematical library, under the name `add_le_add_iff_right`:
@@ -150,7 +160,10 @@ example {a b : ℝ}  (ha : 0 ≤ a) : b ≤ a + b := by
 /- Let's do a variant using `add_le_add_iff_left a : a + b ≤ a + c ↔ b ≤ c` instead. -/
 
 example (a b : ℝ) (hb : 0 ≤ b) : a ≤ a + b := by
-  sorry
+  calc
+    a = 0 + a := by ring
+    _ ≤ b + a := by exact (add_le_add_iff_right a).2 hb
+    _ = a + b := by ring
 
 /-
 Important note: in the previous exercises, we used lemmas like `add_le_add_iff_left` as
@@ -188,7 +201,16 @@ example (a b : ℝ) : (a-b)*(a+b) = 0 ↔ a^2 = b^2 := by
 /- You can try it yourself in this exercise. -/
 
 example (a b : ℝ) : a = b ↔ b - a = 0 := by
-  sorry
+  constructor
+  . intro h
+    calc
+      b - a = b - b := by rw [h]
+          _ = 0     := by ring
+  . intro h
+    calc
+      a = b - (b - a) := by ring
+      _ = b - 0       := by rw [h]
+      _ = b           := by ring
 
 /-
 This is the end of this file where you learned how to handle implications and
@@ -198,4 +220,3 @@ equivalences. You learned about tactics:
 * `have`
 * `constructor`
 -/
-
